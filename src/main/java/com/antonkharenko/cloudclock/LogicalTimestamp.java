@@ -40,7 +40,6 @@ public final class LogicalTimestamp implements Comparable<LogicalTimestamp> {
 		} else {
 			return Long.compare(that.count, this.count);
 		}
-
 	}
 
 	@Override
