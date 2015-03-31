@@ -1,38 +1,47 @@
 package com.antonkharenko.cloudclock;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  * @author Anton Kharenko
  */
 public class LogicalClock {
 
-	// TODO: make thread safe and non-blocking at same time
 	// TODO: write javadoc
 
-	private LogicalTimestamp time;
+	private final AtomicReference<LogicalTimestamp> timeReference = new AtomicReference<LogicalTimestamp>();
 
 	public LogicalClock() {
-		this.time = new LogicalTimestamp();
+		this(new LogicalTimestamp());
 	}
 
 	public LogicalClock(LogicalTimestamp initialTimestamp) {
-		this.time = initialTimestamp;
+		this.timeReference.set(initialTimestamp);
 	}
 
-	public synchronized LogicalTimestamp time() {
-		return time;
+	public LogicalTimestamp time() {
+		return timeReference.get();
 	}
 
-	public synchronized LogicalTimestamp tick() {
-		time = time.nextTimestamp();
-		return time;
+	public LogicalTimestamp tick() {
+		LogicalTimestamp previousTimestamp, nextTimestamp;
+		do {
+			previousTimestamp = timeReference.get();
+			nextTimestamp = previousTimestamp.nextTimestamp();
+		} while (!timeReference.compareAndSet(previousTimestamp, nextTimestamp));
+		return nextTimestamp;
 	}
 
-	public synchronized LogicalTimestamp tick(LogicalTimestamp happensBeforeTimestamp) {
-		if (time.compareTo(happensBeforeTimestamp) > 0) {
-			time = time.nextTimestamp();
-		} else {
-			time = happensBeforeTimestamp.nextTimestamp();
-		}
-		return time;
+	public LogicalTimestamp tick(LogicalTimestamp happensBeforeTimestamp) {
+		LogicalTimestamp previousTimestamp, nextTimestamp;
+		do {
+			previousTimestamp = timeReference.get();
+			if (previousTimestamp.compareTo(happensBeforeTimestamp) > 0) {
+				nextTimestamp = previousTimestamp.nextTimestamp();
+			} else {
+				nextTimestamp = happensBeforeTimestamp.nextTimestamp();
+			}
+		} while (!timeReference.compareAndSet(previousTimestamp, nextTimestamp));
+		return nextTimestamp;
 	}
 }
