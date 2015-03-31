@@ -12,79 +12,79 @@ public class LamportClockImplTest {
 	@Test
 	public void testGet() {
 		// Given
-		Tick initialTick = new Tick(0L);
-		LamportClockImpl lamportClock = new LamportClockImpl(initialTick);
+		LogicalTimestamp initialTimestamp = new LogicalTimestamp();
+		LogicalClock clock = new LogicalClock(initialTimestamp);
 
 		// When
-		Tick tick = lamportClock.get();
+		LogicalTimestamp actualTimestamp = clock.time();
 
 		// Then
-		assertNotNull(tick);
-		assertEquals(initialTick, tick);
+		assertNotNull(actualTimestamp);
+		assertEquals(initialTimestamp, actualTimestamp);
 	}
 
 	@Test
 	public void testTick() {
 		// Given
-		LamportClockImpl lamportClock = new LamportClockImpl();
+		LogicalClock clock = new LogicalClock();
 
 
 		// When
-		Tick tickBefore = lamportClock.get();
-		Tick tickAfter = lamportClock.tick();
+		LogicalTimestamp before = clock.time();
+		LogicalTimestamp after = clock.tick();
 
 		// Then
-		assertNotNull(tickBefore);
-		assertNotNull(tickAfter);
-		assertTrue(tickAfter.compareTo(tickBefore) > 0);
+		assertNotNull(before);
+		assertNotNull(after);
+		assertTrue(after.compareTo(before) > 0);
 	}
 
 	@Test
 	public void testTickOnCounterOverflow() {
 		// Given
-		Tick initialTick = new Tick(Long.MAX_VALUE);
-		LamportClockImpl lamportClock = new LamportClockImpl(initialTick);
+		LogicalTimestamp initialTimestamp = new LogicalTimestamp(Long.MAX_VALUE);
+		LogicalClock clock = new LogicalClock(initialTimestamp);
 
 		// When
-		Tick tickBefore = lamportClock.get();
-		Tick tickAfter = lamportClock.tick();
+		LogicalTimestamp before = clock.time();
+		LogicalTimestamp after = clock.tick();
 
 		// Then
-		assertNotNull(tickBefore);
-		assertNotNull(tickAfter);
-		assertTrue(tickAfter.compareTo(tickBefore) > 0);
+		assertNotNull(before);
+		assertNotNull(after);
+		assertTrue(after.compareTo(before) > 0);
 	}
 
 	@Test
 	public void testTockWithOldHappensBeforeTick() {
 		// Given
-		Tick happensBeforeTick = new Tick(10L);
-		Tick initialTick = new Tick(100L);
-		LamportClockImpl lamportClock = new LamportClockImpl(initialTick);
+		LogicalTimestamp happensBeforeTimestamp = new LogicalTimestamp(10L);
+		LogicalTimestamp initialTimestamp = new LogicalTimestamp(100L);
+		LogicalClock clock = new LogicalClock(initialTimestamp);
 
 		// When
-		Tick resultTick = lamportClock.tock(happensBeforeTick);
+		LogicalTimestamp resultTimestamp = clock.tick(happensBeforeTimestamp);
 
 		// Then
-		assertNotNull(resultTick);
-		assertTrue(resultTick.compareTo(happensBeforeTick) > 0);
-		assertTrue(resultTick.compareTo(initialTick) > 0);
+		assertNotNull(resultTimestamp);
+		assertTrue(resultTimestamp.compareTo(happensBeforeTimestamp) > 0);
+		assertTrue(resultTimestamp.compareTo(initialTimestamp) > 0);
 	}
 
 	@Test
 	public void testTockWithNewHappensBeforeTick() {
 		// Given
-		Tick happensBeforeTick = new Tick(100L);
-		Tick initialTick = new Tick(10L);
-		LamportClockImpl lamportClock = new LamportClockImpl(initialTick);
+		LogicalTimestamp happensBeforeTimestamp = new LogicalTimestamp(100L);
+		LogicalTimestamp initialTimestamp = new LogicalTimestamp(10L);
+		LogicalClock clock = new LogicalClock(initialTimestamp);
 
 		// When
-		Tick resultTick = lamportClock.tock(happensBeforeTick);
+		LogicalTimestamp resultTimestamp = clock.tick(happensBeforeTimestamp);
 
 		// Then
-		assertNotNull(resultTick);
-		assertTrue(resultTick.compareTo(happensBeforeTick) > 0);
-		assertTrue(resultTick.compareTo(initialTick) > 0);
+		assertNotNull(resultTimestamp);
+		assertTrue(resultTimestamp.compareTo(happensBeforeTimestamp) > 0);
+		assertTrue(resultTimestamp.compareTo(initialTimestamp) > 0);
 	}
 
 }
