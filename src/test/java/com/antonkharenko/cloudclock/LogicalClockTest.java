@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 /**
  * @author Anton Kharenko
  */
-public class LamportClockImplTest {
+public class LogicalClockTest {
 
 	@Test
 	public void testGet() {
