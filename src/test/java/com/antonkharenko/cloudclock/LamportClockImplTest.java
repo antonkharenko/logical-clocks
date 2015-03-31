@@ -10,6 +10,20 @@ import static org.junit.Assert.*;
 public class LamportClockImplTest {
 
 	@Test
+	public void testGet() {
+		// Given
+		Tick initialTick = new Tick(0L);
+		LamportClockImpl lamportClock = new LamportClockImpl(initialTick);
+
+		// When
+		Tick tick = lamportClock.get();
+
+		// Then
+		assertNotNull(tick);
+		assertEquals(initialTick, tick);
+	}
+
+	@Test
 	public void testTick() {
 		// Given
 		LamportClockImpl lamportClock = new LamportClockImpl();
@@ -26,9 +40,7 @@ public class LamportClockImplTest {
 	}
 
 	@Test
-	public void testTickOverflow() {
-		// TODO: make it pass
-
+	public void testTickOnCounterOverflow() {
 		// Given
 		Tick initialTick = new Tick(Long.MAX_VALUE);
 		LamportClockImpl lamportClock = new LamportClockImpl(initialTick);

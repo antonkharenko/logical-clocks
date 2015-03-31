@@ -1,28 +1,36 @@
 package com.antonkharenko.cloudclock;
 
-import com.sun.istack.internal.NotNull;
-
 /**
  * @author Anton Kharenko
  */
 public final class Tick implements Comparable<Tick> {
 
-	private final long timestamp;
-	// TODO: make infinite clock
-	// private final boolean flip;
+	private final long counter;
+	private final boolean flip;
 
-	public Tick(long timestamp/*, boolean flip*/) {
-		this.timestamp = timestamp;
-		//this.flip = flip;
+	public Tick(long counter) {
+		this(counter, false);
+	}
+
+	public Tick(long counter, boolean flip) {
+		this.counter = counter;
+		this.flip = flip;
 	}
 
 	public Tick nextTick() {
-		return new Tick(timestamp + 1);
+		long nextTimestamp = Math.max(0, counter + 1);
+		boolean nextFlip = nextTimestamp > counter ? flip : !flip; // reverse flip on counter reset
+		return new Tick(nextTimestamp, nextFlip);
 	}
 
 	@Override
 	public int compareTo(Tick that) {
-		return Long.compare(this.timestamp, that.timestamp);
+		if (this.flip == that.flip) {
+			return Long.compare(this.counter, that.counter);
+		} else {
+			return Long.compare(that.counter, this.counter);
+		}
+
 	}
 
 	@Override
@@ -36,7 +44,10 @@ public final class Tick implements Comparable<Tick> {
 
 		Tick tick = (Tick) o;
 
-		if (timestamp != tick.timestamp) {
+		if (counter != tick.counter) {
+			return false;
+		}
+		if (flip != tick.flip) {
 			return false;
 		}
 
@@ -45,13 +56,16 @@ public final class Tick implements Comparable<Tick> {
 
 	@Override
 	public int hashCode() {
-		return (int) (timestamp ^ (timestamp >>> 32));
+		int result = (int) (counter ^ (counter >>> 32));
+		result = 31 * result + (flip ? 1 : 0);
+		return result;
 	}
 
 	@Override
 	public String toString() {
 		return "Tick{" +
-				"timestamp=" + timestamp +
+				"counter=" + counter +
+				", flip=" + flip +
 				'}';
 	}
 }
