@@ -22,7 +22,57 @@ public class LamportClockImplTest {
 		// Then
 		assertNotNull(tickBefore);
 		assertNotNull(tickAfter);
-		assertTrue(tickAfter.getTimestamp() > tickBefore.getTimestamp());
+		assertTrue(tickAfter.compareTo(tickBefore) > 0);
+	}
+
+	@Test
+	public void testTickOverflow() {
+		// TODO: make it pass
+
+		// Given
+		Tick initialTick = new Tick(Long.MAX_VALUE);
+		LamportClockImpl lamportClock = new LamportClockImpl(initialTick);
+
+		// When
+		Tick tickBefore = lamportClock.get();
+		Tick tickAfter = lamportClock.tick();
+
+		// Then
+		assertNotNull(tickBefore);
+		assertNotNull(tickAfter);
+		assertTrue(tickAfter.compareTo(tickBefore) > 0);
+	}
+
+	@Test
+	public void testTockWithOldHappensBeforeTick() {
+		// Given
+		Tick happensBeforeTick = new Tick(10L);
+		Tick initialTick = new Tick(100L);
+		LamportClockImpl lamportClock = new LamportClockImpl(initialTick);
+
+		// When
+		Tick resultTick = lamportClock.tock(happensBeforeTick);
+
+		// Then
+		assertNotNull(resultTick);
+		assertTrue(resultTick.compareTo(happensBeforeTick) > 0);
+		assertTrue(resultTick.compareTo(initialTick) > 0);
+	}
+
+	@Test
+	public void testTockWithNewHappensBeforeTick() {
+		// Given
+		Tick happensBeforeTick = new Tick(100L);
+		Tick initialTick = new Tick(10L);
+		LamportClockImpl lamportClock = new LamportClockImpl(initialTick);
+
+		// When
+		Tick resultTick = lamportClock.tock(happensBeforeTick);
+
+		// Then
+		assertNotNull(resultTick);
+		assertTrue(resultTick.compareTo(happensBeforeTick) > 0);
+		assertTrue(resultTick.compareTo(initialTick) > 0);
 	}
 
 }

@@ -5,12 +5,16 @@ package com.antonkharenko.cloudclock;
  */
 public class LamportClockImpl implements LamportClock {
 
-	// TODO: make thread safe and non-blocking
+	// TODO: make thread safe and non-blocking at same time
 
 	private Tick currentTick;
 
 	public LamportClockImpl() {
 		this.currentTick = new Tick(0L);
+	}
+
+	public LamportClockImpl(Tick initialTick) {
+		this.currentTick = initialTick;
 	}
 
 	@Override
@@ -20,14 +24,17 @@ public class LamportClockImpl implements LamportClock {
 
 	@Override
 	public synchronized Tick tick() {
-		currentTick = new Tick(currentTick.getTimestamp() + 1);
+		currentTick = currentTick.nextTick();
 		return currentTick;
 	}
 
 	@Override
 	public synchronized Tick tock(Tick happensBeforeTick) {
-		long newTimestamp = Math.max(happensBeforeTick.getTimestamp(), currentTick.getTimestamp()) + 1;
-		currentTick = new Tick(newTimestamp);
+		if (currentTick.compareTo(happensBeforeTick) > 0) {
+			currentTick = currentTick.nextTick();
+		} else {
+			currentTick = happensBeforeTick.nextTick();
+		}
 		return currentTick;
 	}
 }
