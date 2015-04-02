@@ -1,12 +1,13 @@
 package com.antonkharenko.cloudclock;
 
+import java.nio.ByteBuffer;
+
 /**
  * @author Anton Kharenko
  */
 public final class LogicalTimestamp implements Comparable<LogicalTimestamp> {
 
 	// TODO: write javadoc
-	// TODO: serialization/deserialization
 
 	private final long count;
 	private final boolean flip;
@@ -40,6 +41,30 @@ public final class LogicalTimestamp implements Comparable<LogicalTimestamp> {
 		} else {
 			return Long.compare(that.count, this.count);
 		}
+	}
+
+	public byte[] toBytes() {
+		byte[] bytes = new byte[8];
+		for (int i = 0; i < Long.BYTES; i++) {
+			bytes[i] = (byte) (count >> (Long.BYTES - i - 1 << 3));
+		}
+		if (flip) {
+			bytes[0] |= Byte.MIN_VALUE;
+		}
+		return bytes;
+	}
+
+	public static LogicalTimestamp fromBytes(byte[] bytes) {
+		long count = 0;
+		boolean flip = bytes[0] < 0;
+		for (byte aByte : bytes) {
+			count <<= Byte.SIZE;
+			count += aByte & 0xFF;
+		}
+		if (flip) {
+			count &= Long.MAX_VALUE;
+		}
+		return new LogicalTimestamp(count, flip);
 	}
 
 	@Override
