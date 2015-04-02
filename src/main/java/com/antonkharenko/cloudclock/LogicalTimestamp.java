@@ -1,11 +1,13 @@
 package com.antonkharenko.cloudclock;
 
-import java.nio.ByteBuffer;
+import java.io.Serializable;
 
 /**
  * @author Anton Kharenko
  */
-public final class LogicalTimestamp implements Comparable<LogicalTimestamp> {
+public final class LogicalTimestamp implements Comparable<LogicalTimestamp>, Serializable {
+
+	private static final long serialVersionUID = -919934135310565056L;
 
 	// TODO: write javadoc
 
