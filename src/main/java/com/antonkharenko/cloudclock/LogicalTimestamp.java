@@ -1,6 +1,7 @@
 package com.antonkharenko.cloudclock;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 /**
  * This class represents specific time value of logical clock at the given moment of time. This class is
@@ -53,6 +54,20 @@ public final class LogicalTimestamp implements Comparable<LogicalTimestamp>, Ser
 		long nextCount = Math.max(0, count + 1);
 		boolean nextFlip = nextCount > count ? flip : !flip; // reverse flip on count reset
 		return new LogicalTimestamp(nextCount, nextFlip);
+	}
+
+	//TODO: javadoc
+	public boolean isBefore(LogicalTimestamp timestamp) {
+		return compareTo(timestamp) < 0;
+	}
+
+	//TODO: javadoc
+	public boolean isAfter(LogicalTimestamp timestamp) {
+		return compareTo(timestamp) > 0;
+	}
+	//TODO: javadoc
+	public boolean isConcurrent(LogicalTimestamp timestamp) {
+		return compareTo(timestamp) == 0;
 	}
 
 	/**
