@@ -1,7 +1,6 @@
 package com.antonkharenko.cloudclock;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 /**
  * This class represents specific time value of logical clock at the given moment of time. This class is
