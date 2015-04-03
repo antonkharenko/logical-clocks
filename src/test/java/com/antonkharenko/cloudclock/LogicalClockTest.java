@@ -13,6 +13,8 @@ import static org.junit.Assert.*;
  */
 public class LogicalClockTest {
 
+	// TODO: more unit tests
+
 	@Test
 	public void testGet() {
 		// Given

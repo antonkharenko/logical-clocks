@@ -11,6 +11,8 @@ import static org.junit.Assert.*;
  */
 public class LogicalTimestampTest {
 
+	// TODO: more unit tests
+
 	@Test
 	public void testToBytes() {
 		LogicalTimestamp ts = new LogicalTimestamp(Long.MAX_VALUE - 1001, true);
