@@ -20,7 +20,15 @@ public class LogicalTimestampTest {
 
 		LogicalTimestamp tsBack = LogicalTimestamp.fromBytes(tsBytes);
 		assertEquals(ts, tsBack);
+	}
 
+	@Test
+	public void testToLong() {
+		LogicalTimestamp ts = new LogicalTimestamp(Long.MAX_VALUE - 1001, true);
+		long longValue = ts.toLong();
+
+		LogicalTimestamp tsBack = LogicalTimestamp.fromLong(longValue);
+		assertEquals(ts, tsBack);
 	}
 
 	@Test

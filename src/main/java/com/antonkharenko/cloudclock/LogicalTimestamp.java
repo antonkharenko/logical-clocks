@@ -55,16 +55,23 @@ public final class LogicalTimestamp implements Comparable<LogicalTimestamp>, Ser
 		return new LogicalTimestamp(nextCount, nextFlip);
 	}
 
-	//TODO: javadoc
+	/**
+	 * Returns true if this timestamp happens-before given timestamp.
+	 */
 	public boolean isBefore(LogicalTimestamp timestamp) {
 		return compareTo(timestamp) < 0;
 	}
 
-	//TODO: javadoc
+	/**
+	 * Returns true if the given timestamp happens-before this timestamp.
+	 */
 	public boolean isAfter(LogicalTimestamp timestamp) {
 		return compareTo(timestamp) > 0;
 	}
-	//TODO: javadoc
+
+	/**
+	 * Returns true if this timestamp and the given timestamp in a concurrent relation to each other.
+	 */
 	public boolean isConcurrent(LogicalTimestamp timestamp) {
 		return compareTo(timestamp) == 0;
 	}
@@ -102,6 +109,17 @@ public final class LogicalTimestamp implements Comparable<LogicalTimestamp>, Ser
 	}
 
 	/**
+	 * Converts this timestamp into a byte array representation. It can be converted
+	 * back by {@link LogicalTimestamp#fromBytes(byte[])} method.
+	 */
+	public long toLong() {
+		long longValue = count;
+		if (flip)
+			longValue |= Long.MIN_VALUE;
+		return longValue;
+	}
+
+	/**
 	 * Converts given byte array into corresponding logical timestamp. It is supposed that given byte array
 	 * was produced by {@link LogicalTimestamp#toBytes()} method.
 	 */
@@ -115,6 +133,16 @@ public final class LogicalTimestamp implements Comparable<LogicalTimestamp>, Ser
 		if (flip) {
 			count &= Long.MAX_VALUE;
 		}
+		return new LogicalTimestamp(count, flip);
+	}
+
+	/**
+	 * Converts given long value into corresponding logical timestamp. It is supposed that given long
+	 * was produced by {@link LogicalTimestamp#toLong()} method.
+	 */
+	public static LogicalTimestamp fromLong(long longValue) {
+		boolean flip = longValue < 0;
+		long count = flip ? (longValue & Long.MAX_VALUE) : longValue;
 		return new LogicalTimestamp(count, flip);
 	}
 
