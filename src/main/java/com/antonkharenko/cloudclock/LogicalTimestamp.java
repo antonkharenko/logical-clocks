@@ -6,13 +6,23 @@ import java.io.Serializable;
  * This class represents specific time value of logical clock at the given moment of time. This class is
  * immutable. It provides convenient operations for working with logical time.
  *
+ * <p>Logical timestamps assigned to each event in the distributed system obey causality, but they can not
+ * distinguish concurrent events. Logical timestamps not guaranteed to be ordered or unequal for concurrent
+ * events:<pre>
+ * E1 -> E2 => timestamp(E1) < timestamp(E2), but
+ * timestamp(E1) < timestamp(E2) => {E1 -> E2} or {E1 and E2 are concurrent}</pre>
+ *
+ * <p>In order to identify concurrent events see {@link com.antonkharenko.cloudclock.VectorTimestamp}.
+ *
  * @author Anton Kharenko
  * @see com.antonkharenko.cloudclock.LogicalClock
+ * @see com.antonkharenko.cloudclock.VectorTimestamp
  */
 public final class LogicalTimestamp implements Comparable<LogicalTimestamp>, Serializable {
 
 	private static final long serialVersionUID = -919934135310565056L;
 
+	// TODO: one cyclic long field is actually enough (remove flip field)
 	private final long count;
 	private final boolean flip;
 
@@ -56,41 +66,30 @@ public final class LogicalTimestamp implements Comparable<LogicalTimestamp>, Ser
 	}
 
 	/**
-	 * Returns true if this timestamp happens-before given timestamp.
+	 * Converts given byte array into corresponding logical timestamp. It is supposed that given byte array
+	 * was produced by {@link LogicalTimestamp#toBytes()} method.
 	 */
-	public boolean isBefore(LogicalTimestamp timestamp) {
-		return compareTo(timestamp) < 0;
-	}
-
-	/**
-	 * Returns true if the given timestamp happens-before this timestamp.
-	 */
-	public boolean isAfter(LogicalTimestamp timestamp) {
-		return compareTo(timestamp) > 0;
-	}
-
-	/**
-	 * Returns true if this timestamp and the given timestamp in a concurrent relation to each other.
-	 */
-	public boolean isConcurrent(LogicalTimestamp timestamp) {
-		return compareTo(timestamp) == 0;
-	}
-
-	/**
-	 * Compares two logical timestamps.
-	 *
-	 * @param   that  the logical timestamp to be compared.
-	 * @return  the value {@code 0} if this timestamp is happens at same logical time (concurrently) to the argument timestamp;
-	 * 			a value less than {@code 0} if this timestamp happens before than the argument timestamp;
-	 * 			and a value greater than {@code 0} if this timestamp is happens after than the argument timestamp.
-	 */
-	@Override
-	public int compareTo(LogicalTimestamp that) {
-		if (this.flip == that.flip) {
-			return Long.compare(this.count, that.count);
-		} else {
-			return Long.compare(that.count, this.count);
+	public static LogicalTimestamp fromBytes(byte[] bytes) {
+		long count = 0;
+		boolean flip = bytes[0] < 0;
+		for (byte aByte : bytes) {
+			count <<= Byte.SIZE;
+			count += aByte & 0xFF;
 		}
+		if (flip) {
+			count &= Long.MAX_VALUE;
+		}
+		return new LogicalTimestamp(count, flip);
+	}
+
+	/**
+	 * Converts given long value into corresponding logical timestamp. It is supposed that given long
+	 * was produced by {@link LogicalTimestamp#toLong()} method.
+	 */
+	public static LogicalTimestamp fromLong(long longValue) {
+		boolean flip = longValue < 0;
+		long count = flip ? (longValue & Long.MAX_VALUE) : longValue;
+		return new LogicalTimestamp(count, flip);
 	}
 
 	/**
@@ -120,30 +119,34 @@ public final class LogicalTimestamp implements Comparable<LogicalTimestamp>, Ser
 	}
 
 	/**
-	 * Converts given byte array into corresponding logical timestamp. It is supposed that given byte array
-	 * was produced by {@link LogicalTimestamp#toBytes()} method.
+	 * Returns true if the given timestamp is smaller than this timestamp.
 	 */
-	public static LogicalTimestamp fromBytes(byte[] bytes) {
-		long count = 0;
-		boolean flip = bytes[0] < 0;
-		for (byte aByte : bytes) {
-			count <<= Byte.SIZE;
-			count += aByte & 0xFF;
-		}
-		if (flip) {
-			count &= Long.MAX_VALUE;
-		}
-		return new LogicalTimestamp(count, flip);
+	public boolean isBefore(LogicalTimestamp timestamp) {
+		return compareTo(timestamp) < 0;
 	}
 
 	/**
-	 * Converts given long value into corresponding logical timestamp. It is supposed that given long
-	 * was produced by {@link LogicalTimestamp#toLong()} method.
+	 * Returns true if the given timestamp is bigger than this timestamp.
 	 */
-	public static LogicalTimestamp fromLong(long longValue) {
-		boolean flip = longValue < 0;
-		long count = flip ? (longValue & Long.MAX_VALUE) : longValue;
-		return new LogicalTimestamp(count, flip);
+	public boolean isAfter(LogicalTimestamp timestamp) {
+		return compareTo(timestamp) > 0;
+	}
+
+	/**
+	 * Compares two logical timestamps.
+	 *
+	 * @param   that  the logical timestamp to be compared.
+	 * @return  the value {@code 0} if this timestamp is happens at same logical time to the argument timestamp;
+	 * 			a value less than {@code 0} if this timestamp is smaller than the argument timestamp;
+	 * 			and a value greater than {@code 0} if this timestamp is bigger than the argument timestamp.
+	 */
+	@Override
+	public int compareTo(LogicalTimestamp that) {
+		if (this.flip == that.flip) {
+			return Long.compare(this.count, that.count);
+		} else {
+			return Long.compare(that.count, this.count);
+		}
 	}
 
 	@Override
