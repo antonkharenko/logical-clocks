@@ -55,7 +55,7 @@ public final class VectorTimestamp {
 	 * timestamps are concurrent or this timestamp happens after the given timestamp.
 	 */
 	public boolean isHappensBefore(VectorTimestamp that) {
-		return getRelation(that) == Relation.HAPPENS_BEFORE;
+		return compare(that) == Relation.HAPPENS_BEFORE;
 	}
 
 	/**
@@ -64,7 +64,7 @@ public final class VectorTimestamp {
 	 * timestamps are concurrent or this timestamp happens before the given timestamp.
 	 */
 	public boolean isHappensAfter(VectorTimestamp that) {
-		return getRelation(that) == Relation.HAPPENS_AFTER;
+		return compare(that) == Relation.HAPPENS_AFTER;
 	}
 
 	/**
@@ -73,19 +73,19 @@ public final class VectorTimestamp {
 	 * timestamps are in causal relation.
 	 */
 	public boolean isConcurrent(VectorTimestamp that) {
-		return getRelation(that) == Relation.HAPPENS_BEFORE;
+		return compare(that) == Relation.HAPPENS_BEFORE;
 	}
 
 	/**
-	 * Defines relation between this timestamp and given timestamp. Two timestamps may be equal, concurrent or
+	 * Compares two vector timestamps and defines relation between them. Two timestamps may be equal, concurrent or
 	 * in causal (happens-before) relation.
 	 *
-	 * @param that given timestamp to compare
+	 * @param that given vector timestamp to compare
 	 * @return {@code Relation} between current timestamp and the given one.
 	 *
 	 * @see com.antonkharenko.cloudclock.Relation
 	 */
-	public Relation getRelation(VectorTimestamp that) {
+	public Relation compare(VectorTimestamp that) {
 		if (timestamps.length != that.timestamps.length)
 			throw new IllegalArgumentException("Timestamp vectors length do not match.");
 
