@@ -179,7 +179,7 @@ public final class LogicalTimestamp implements Comparable<LogicalTimestamp>, Ser
 
 	@Override
 	public String toString() {
-		return "Tick{" +
+		return "LogicalTimestamp{" +
 				"count=" + count +
 				", flip=" + flip +
 				'}';
