@@ -69,9 +69,28 @@ public class LogicalTimestampTest {
 	}
 
 	@Test
+	public void testNextTimestampAndComparisonMinValue() {
+		// Given
+		LogicalTimestamp ts = new LogicalTimestamp(Long.MIN_VALUE);
+
+		// When
+		LogicalTimestamp nextTs = ts.nextTimestamp();
+
+		// Then
+		assertNotNull(nextTs);
+		assertTrue(ts.isBefore(nextTs));
+		assertTrue(nextTs.isAfter(ts));
+		assertTrue(ts.compareTo(nextTs) < 0);
+		assertTrue(nextTs.compareTo(ts) > 0);
+		assertFalse(ts.equals(nextTs));
+		assertFalse(ts.isAfter(nextTs));
+		assertFalse(nextTs.isBefore(nextTs));
+	}
+
+	@Test
 	public void testNextTimestampAndComparisonFlipMaxValue() {
 		// Given
-		LogicalTimestamp ts = new LogicalTimestamp(Long.MAX_VALUE, true);
+		LogicalTimestamp ts = new LogicalTimestamp(-1);
 
 		// When
 		LogicalTimestamp nextTs = ts.nextTimestamp();
@@ -90,7 +109,7 @@ public class LogicalTimestampTest {
 	@Test
 	public void testBytesSerialization() {
 		// Given
-		LogicalTimestamp original = new LogicalTimestamp(Long.MAX_VALUE - 1001, true);
+		LogicalTimestamp original = new LogicalTimestamp(-1001);
 
 		// When
 		byte[] tsBytes = original.toBytes();
@@ -103,7 +122,7 @@ public class LogicalTimestampTest {
 	@Test
 	public void testLongSerialization() {
 		// Given
-		LogicalTimestamp original = new LogicalTimestamp(Long.MAX_VALUE, true);
+		LogicalTimestamp original = new LogicalTimestamp(-1);
 
 		// When
 		long longValue = original.toLong();
@@ -116,7 +135,7 @@ public class LogicalTimestampTest {
 	@Test
 	public void testJavaSerialization() throws Exception {
 		// Given
-		LogicalTimestamp original = new LogicalTimestamp(Long.MAX_VALUE - 1001, true);
+		LogicalTimestamp original = new LogicalTimestamp(-1001);
 
 		// When
 		ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();

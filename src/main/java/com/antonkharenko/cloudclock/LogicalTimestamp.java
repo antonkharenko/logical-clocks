@@ -22,47 +22,30 @@ public final class LogicalTimestamp implements Comparable<LogicalTimestamp>, Ser
 
 	private static final long serialVersionUID = -919934135310565056L;
 
-	// TODO: one cyclic long field is actually enough (remove flip field)
-	private final long count;
-	private final boolean flip;
+	private final long cyclicTime;
 
 	/**
 	 * Creates instance of logical timestamp at the initial moment of time.
 	 */
 	public LogicalTimestamp() {
-		this(0L, false);
+		this(0L);
 	}
 
 	/**
-	 * Creates instance of logical timestamp at the given logical time.
+	 * Creates instance of logical timestamp at the given logical time. Time value passed
+	 * as argument should be considered to be represented in cyclic time.
 	 *
-	 * @param count logical time counter value
+	 * @param cyclicTime logical time counter value
 	 */
-	public LogicalTimestamp(long count) {
-		this(count, false);
-	}
-
-	/**
-	 * Creates instance of logical timestamp at the given logical time.
-	 *
-	 * @param count logical time counter value.
-	 * @param flip indicates period when time counter was reset to initial value.
-	 */
-	public LogicalTimestamp(long count, boolean flip) {
-		if (count < 0) {
-			throw new IllegalArgumentException("Count can't be negative.");
-		}
-		this.count = count;
-		this.flip = flip;
+	private LogicalTimestamp(long cyclicTime) {
+		this.cyclicTime = cyclicTime;
 	}
 
 	/**
 	 * Returns timestamp which is next in time comparing to this timestamp instance.
 	 */
 	public LogicalTimestamp nextTimestamp() {
-		long nextCount = Math.max(0, count + 1);
-		boolean nextFlip = nextCount > count ? flip : !flip; // reverse flip on count reset
-		return new LogicalTimestamp(nextCount, nextFlip);
+		return new LogicalTimestamp(cyclicTime + 1);
 	}
 
 	/**
@@ -71,15 +54,11 @@ public final class LogicalTimestamp implements Comparable<LogicalTimestamp>, Ser
 	 */
 	public static LogicalTimestamp fromBytes(byte[] bytes) {
 		long count = 0;
-		boolean flip = bytes[0] < 0;
 		for (byte aByte : bytes) {
 			count <<= Byte.SIZE;
 			count += aByte & 0xFF;
 		}
-		if (flip) {
-			count &= Long.MAX_VALUE;
-		}
-		return new LogicalTimestamp(count, flip);
+		return new LogicalTimestamp(count);
 	}
 
 	/**
@@ -87,9 +66,7 @@ public final class LogicalTimestamp implements Comparable<LogicalTimestamp>, Ser
 	 * was produced by {@link LogicalTimestamp#toLong()} method.
 	 */
 	public static LogicalTimestamp fromLong(long longValue) {
-		boolean flip = longValue < 0;
-		long count = flip ? (longValue & Long.MAX_VALUE) : longValue;
-		return new LogicalTimestamp(count, flip);
+		return new LogicalTimestamp(longValue);
 	}
 
 	/**
@@ -99,10 +76,7 @@ public final class LogicalTimestamp implements Comparable<LogicalTimestamp>, Ser
 	public byte[] toBytes() {
 		byte[] bytes = new byte[8];
 		for (int i = 0; i < Long.BYTES; i++) {
-			bytes[i] = (byte) (count >> (Long.BYTES - i - 1 << 3));
-		}
-		if (flip) {
-			bytes[0] |= Byte.MIN_VALUE;
+			bytes[i] = (byte) (cyclicTime >> (Long.BYTES - i - 1 << 3));
 		}
 		return bytes;
 	}
@@ -112,10 +86,7 @@ public final class LogicalTimestamp implements Comparable<LogicalTimestamp>, Ser
 	 * back by {@link LogicalTimestamp#fromBytes(byte[])} method.
 	 */
 	public long toLong() {
-		long longValue = count;
-		if (flip)
-			longValue |= Long.MIN_VALUE;
-		return longValue;
+		return cyclicTime;
 	}
 
 	/**
@@ -142,46 +113,35 @@ public final class LogicalTimestamp implements Comparable<LogicalTimestamp>, Ser
 	 */
 	@Override
 	public int compareTo(LogicalTimestamp that) {
-		if (this.flip == that.flip) {
-			return Long.compare(this.count, that.count);
+		if ((this.cyclicTime < 0) == (that.cyclicTime < 0)) {
+			return Long.compare(this.cyclicTime, that.cyclicTime);
 		} else {
-			return Long.compare(that.count, this.count);
+			return Long.compare(that.cyclicTime & Long.MAX_VALUE, this.cyclicTime & Long.MAX_VALUE);
 		}
 	}
 
 	@Override
-	public boolean equals(Object that) {
-		if (this == that) {
+	public boolean equals(Object o) {
+		if (this == o) {
 			return true;
 		}
-		if (that == null || getClass() != that.getClass()) {
+		if (o == null || getClass() != o.getClass()) {
 			return false;
 		}
 
-		LogicalTimestamp tick = (LogicalTimestamp) that;
-
-		if (count != tick.count) {
-			return false;
-		}
-		if (flip != tick.flip) {
-			return false;
-		}
-
-		return true;
+		LogicalTimestamp that = (LogicalTimestamp) o;
+		return this.cyclicTime == that.cyclicTime;
 	}
 
 	@Override
 	public int hashCode() {
-		int result = (int) (count ^ (count >>> 32));
-		result = 31 * result + (flip ? 1 : 0);
-		return result;
+		return (int) (cyclicTime ^ (cyclicTime >>> 32));
 	}
 
 	@Override
 	public String toString() {
 		return "LogicalTimestamp{" +
-				"count=" + count +
-				", flip=" + flip +
+				"cyclicTime=" + cyclicTime +
 				'}';
 	}
 }

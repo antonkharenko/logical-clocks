@@ -44,7 +44,7 @@ public class LogicalClockTest {
 	@Test
 	public void testTickOnCounterOverflow() {
 		// Given
-		LogicalTimestamp initialTimestamp = new LogicalTimestamp(Long.MAX_VALUE);
+		LogicalTimestamp initialTimestamp = LogicalTimestamp.fromLong(Long.MAX_VALUE);
 		LogicalClock clock = new LogicalClock(initialTimestamp);
 
 		// When
@@ -58,8 +58,8 @@ public class LogicalClockTest {
 	@Test
 	public void testTickWithOldHappensBeforeTick() {
 		// Given
-		LogicalTimestamp happensBeforeTimestamp = new LogicalTimestamp(10L);
-		LogicalTimestamp initialTimestamp = new LogicalTimestamp(100L);
+		LogicalTimestamp happensBeforeTimestamp = LogicalTimestamp.fromLong(10L);
+		LogicalTimestamp initialTimestamp = LogicalTimestamp.fromLong(100L);
 		LogicalClock clock = new LogicalClock(initialTimestamp);
 
 		// When
@@ -74,8 +74,8 @@ public class LogicalClockTest {
 	@Test
 	public void testTickWithNewHappensBeforeTick() {
 		// Given
-		LogicalTimestamp happensBeforeTimestamp = new LogicalTimestamp(100L);
-		LogicalTimestamp initialTimestamp = new LogicalTimestamp(10L);
+		LogicalTimestamp happensBeforeTimestamp = LogicalTimestamp.fromLong(100L);
+		LogicalTimestamp initialTimestamp = LogicalTimestamp.fromLong(10L);
 		LogicalClock clock = new LogicalClock(initialTimestamp);
 
 		// When
