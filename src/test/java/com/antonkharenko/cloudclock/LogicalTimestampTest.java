@@ -33,7 +33,7 @@ public class LogicalTimestampTest {
 	@Test
 	public void testNextTimestampAndComparison() {
 		// Given
-		LogicalTimestamp ts = new LogicalTimestamp(1000L);
+		LogicalTimestamp ts = LogicalTimestamp.fromLong(1000L);
 
 		// When
 		LogicalTimestamp nextTs = ts.nextTimestamp();
@@ -52,7 +52,7 @@ public class LogicalTimestampTest {
 	@Test
 	public void testNextTimestampAndComparisonMaxValue() {
 		// Given
-		LogicalTimestamp ts = new LogicalTimestamp(Long.MAX_VALUE);
+		LogicalTimestamp ts = LogicalTimestamp.fromLong(Long.MAX_VALUE);
 
 		// When
 		LogicalTimestamp nextTs = ts.nextTimestamp();
@@ -71,7 +71,7 @@ public class LogicalTimestampTest {
 	@Test
 	public void testNextTimestampAndComparisonMinValue() {
 		// Given
-		LogicalTimestamp ts = new LogicalTimestamp(Long.MIN_VALUE);
+		LogicalTimestamp ts = LogicalTimestamp.fromLong(Long.MIN_VALUE);
 
 		// When
 		LogicalTimestamp nextTs = ts.nextTimestamp();
@@ -90,7 +90,7 @@ public class LogicalTimestampTest {
 	@Test
 	public void testNextTimestampAndComparisonFlipMaxValue() {
 		// Given
-		LogicalTimestamp ts = new LogicalTimestamp(-1);
+		LogicalTimestamp ts = LogicalTimestamp.fromLong(-1);
 
 		// When
 		LogicalTimestamp nextTs = ts.nextTimestamp();
@@ -109,7 +109,7 @@ public class LogicalTimestampTest {
 	@Test
 	public void testBytesSerialization() {
 		// Given
-		LogicalTimestamp original = new LogicalTimestamp(-1001);
+		LogicalTimestamp original = LogicalTimestamp.fromLong(-1001);
 
 		// When
 		byte[] tsBytes = original.toBytes();
@@ -122,7 +122,7 @@ public class LogicalTimestampTest {
 	@Test
 	public void testLongSerialization() {
 		// Given
-		LogicalTimestamp original = new LogicalTimestamp(-1);
+		LogicalTimestamp original = LogicalTimestamp.fromLong(-1);
 
 		// When
 		long longValue = original.toLong();
@@ -135,7 +135,7 @@ public class LogicalTimestampTest {
 	@Test
 	public void testJavaSerialization() throws Exception {
 		// Given
-		LogicalTimestamp original = new LogicalTimestamp(-1001);
+		LogicalTimestamp original = LogicalTimestamp.fromLong(-1001);
 
 		// When
 		ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
