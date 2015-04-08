@@ -13,8 +13,6 @@ import static org.junit.Assert.*;
  */
 public class LogicalClockTest {
 
-	// TODO: more unit tests
-
 	@Test
 	public void testGet() {
 		// Given
@@ -32,17 +30,15 @@ public class LogicalClockTest {
 	@Test
 	public void testTick() {
 		// Given
-		LogicalClock clock = new LogicalClock();
-
+		LogicalTimestamp initialTimestamp = new LogicalTimestamp();
+		LogicalClock clock = new LogicalClock(initialTimestamp);
 
 		// When
-		LogicalTimestamp before = clock.time();
 		LogicalTimestamp after = clock.tick();
 
 		// Then
-		assertNotNull(before);
 		assertNotNull(after);
-		assertTrue(after.compareTo(before) > 0);
+		assertTrue(after.isAfter(initialTimestamp));
 	}
 
 	@Test
@@ -52,13 +48,11 @@ public class LogicalClockTest {
 		LogicalClock clock = new LogicalClock(initialTimestamp);
 
 		// When
-		LogicalTimestamp before = clock.time();
 		LogicalTimestamp after = clock.tick();
 
 		// Then
-		assertNotNull(before);
 		assertNotNull(after);
-		assertTrue(after.compareTo(before) > 0);
+		assertTrue(after.isAfter(initialTimestamp));
 	}
 
 	@Test
