@@ -82,7 +82,7 @@ public final class LogicalTimestamp implements Comparable<LogicalTimestamp>, Ser
 	}
 
 	/**
-	 * Converts this timestamp into a byte array representation. It can be converted
+	 * Converts this timestamp into a long value. It can be converted
 	 * back by {@link LogicalTimestamp#fromBytes(byte[])} method.
 	 */
 	public long toLong() {
