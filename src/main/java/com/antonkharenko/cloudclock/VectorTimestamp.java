@@ -3,12 +3,19 @@ package com.antonkharenko.cloudclock;
 import java.util.*;
 
 /**
+ * This class represents specific time value of vector clock at the given moment of time. This class is
+ * immutable. It provides convenient operations for working with vector time. In compare to LocalTimestamp
+ * it can identify concurrent events by using more space.
+ *
  * @author Anton Kharenko
  */
 public final class VectorTimestamp {
 
 	private LogicalTimestamp[] timestamps;
 
+	/**
+	 * Creates vector clock of given length with default initial timestamps.
+	 */
 	public VectorTimestamp(int vectorLength) {
 		timestamps = new LogicalTimestamp[vectorLength];
 		for (int i = 0; i < vectorLength; i++) {
@@ -16,10 +23,17 @@ public final class VectorTimestamp {
 		}
 	}
 
+	/**
+	 * Creates vector clock by given array of timestamps.
+	 */
 	public VectorTimestamp(LogicalTimestamp[] timestamps) {
 		this.timestamps = Arrays.copyOf(timestamps, timestamps.length);
 	}
 
+	/**
+	 * Returns new timestamp which is in happens after relation to current timestamp
+	 * taking into account given local process id.
+	 */
 	public VectorTimestamp nextTimestamp(int localIndex) {
 		if (localIndex < 0 || localIndex >= timestamps.length)
 			throw new IllegalArgumentException("Index out of bounds");
@@ -30,6 +44,10 @@ public final class VectorTimestamp {
 		return new VectorTimestamp(newTimestamps);
 	}
 
+	/**
+	 * Returns new timestamp which is in happens after relation to both given timestamp and current timestamp
+	 * taking into account given local process id.
+	 */
 	public VectorTimestamp nextTimestamp(int localIndex, VectorTimestamp happensBeforeTimestamp) {
 		if (localIndex < 0 || localIndex >= timestamps.length)
 			throw new IllegalArgumentException("Index out of bounds.");
