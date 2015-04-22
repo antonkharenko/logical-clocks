@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * @author Anton Kharenko
  */
-public class VectorClock {
+public class DynamicVectorClock {
 
 	private final AtomicReference<VectorTimestamp> timeReference = new AtomicReference<VectorTimestamp>();
 
