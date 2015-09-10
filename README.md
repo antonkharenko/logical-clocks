@@ -2,7 +2,7 @@
 
 # Logical Clocks
 
-Java implementation of Lamport and Vector logical clocks. This repository serves as an illustration to blog post [Time, Clocks and Ordering in a Distributed System](http://www.antonkharenko.com/2015/09/time-clocks-and-ordering-in-distributed.html)
+Java implementation of Lamport and Vector logical clocks. This repository serves as an illustration to blog post [Time, Clocks and Ordering in a Distributed System](http://www.antonkharenko.com/2015/09/time-clocks-and-ordering-in-distributed.html).
 
 ## How to use
 
