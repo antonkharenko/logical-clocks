@@ -3,9 +3,8 @@ package com.antonkharenko.logicalclocks;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * This class implements logical clock abstraction also known as Lamport clock. Logical clock is a
- * mechanism for capturing chronological and causal relationships between events in a distributed
- * system.
+ * This class implements logical clock abstraction. Logical clock is a mechanism for capturing
+ * chronological and causal relationships between events in a distributed system.
  *
  * <p>
  * This implementation provides methods to store local timestamp and update it in a thread safe and

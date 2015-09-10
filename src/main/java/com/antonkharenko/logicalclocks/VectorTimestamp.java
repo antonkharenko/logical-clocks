@@ -9,6 +9,7 @@ import java.util.Arrays;
  *
  * @author Anton Kharenko
  * @see com.antonkharenko.logicalclocks.LogicalTimestamp
+ * @see com.antonkharenko.logicalclocks.VectorClock
  */
 public final class VectorTimestamp {
 
