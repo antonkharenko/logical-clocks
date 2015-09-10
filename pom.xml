@@ -4,8 +4,8 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.antonkharenko</groupId>
-    <artifactId>cloudclock</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>logical-clocks</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
 
     <properties>
         <junit.version>4.12</junit.version>

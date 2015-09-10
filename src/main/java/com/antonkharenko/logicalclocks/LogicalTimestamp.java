@@ -1,4 +1,4 @@
-package com.antonkharenko.cloudclock;
+package com.antonkharenko.logicalclocks;
 
 import java.io.Serializable;
 
@@ -19,11 +19,16 @@ import javax.annotation.Nonnull;
  * </pre>
  *
  * <p>
- * In order to identify concurrent events see {@link com.antonkharenko.cloudclock.VectorTimestamp}.
+ * In order to identify concurrent events see {@link com.antonkharenko.logicalclocks.VectorTimestamp}.
+ *
+ * <p>
+ * See also Leslie Lamport's  paper
+ * <a href="http://research.microsoft.com/en-us/um/people/lamport/pubs/time-clocks.pdf">
+ * Time, Clocks, and the Ordering of Events in a Distributed System</a> for more info.
  *
  * @author Anton Kharenko
- * @see com.antonkharenko.cloudclock.LogicalClock
- * @see com.antonkharenko.cloudclock.VectorTimestamp
+ * @see com.antonkharenko.logicalclocks.LogicalClock
+ * @see com.antonkharenko.logicalclocks.VectorTimestamp
  */
 public final class LogicalTimestamp implements Comparable<LogicalTimestamp>, Serializable {
 

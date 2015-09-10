@@ -1,4 +1,4 @@
-package com.antonkharenko.cloudclock;
+package com.antonkharenko.logicalclocks;
 
 import java.util.Arrays;
 
@@ -8,6 +8,7 @@ import java.util.Arrays;
  * LocalTimestamp it can identify concurrent events by using more space.
  *
  * @author Anton Kharenko
+ * @see com.antonkharenko.logicalclocks.LogicalTimestamp
  */
 public final class VectorTimestamp {
 
@@ -100,7 +101,7 @@ public final class VectorTimestamp {
    *
    * @param that given vector timestamp to compare
    * @return {@code Relation} between current timestamp and the given one.
-   * @see com.antonkharenko.cloudclock.Relation
+   * @see com.antonkharenko.logicalclocks.Relation
    */
   public Relation compare(VectorTimestamp that) {
     if (timestamps.length != that.timestamps.length)

@@ -1,4 +1,4 @@
-package com.antonkharenko.cloudclock;
+package com.antonkharenko.logicalclocks;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -7,16 +7,16 @@ import java.util.concurrent.atomic.AtomicReference;
  * mechanism for capturing chronological and causal relationships between events in a distributed
  * system.
  *
+ * <p>
  * This implementation provides methods to store local timestamp and update it in a thread safe and
  * non-blocking way.
  *
  * @author Anton Kharenko
- * @see com.antonkharenko.cloudclock.LogicalTimestamp
+ * @see com.antonkharenko.logicalclocks.LogicalTimestamp
  */
 public class LogicalClock {
 
-  private final AtomicReference<LogicalTimestamp> timeReference =
-      new AtomicReference<LogicalTimestamp>();
+  private final AtomicReference<LogicalTimestamp> timeReference = new AtomicReference<>();
 
   /**
    * Creates instance of logical clock with default initial timestamp.

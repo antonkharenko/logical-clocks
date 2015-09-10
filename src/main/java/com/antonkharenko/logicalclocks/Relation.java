@@ -1,4 +1,4 @@
-package com.antonkharenko.cloudclock;
+package com.antonkharenko.logicalclocks;
 
 /**
  * Represents logical relation Happens-Before between two events which happens in the distributed
