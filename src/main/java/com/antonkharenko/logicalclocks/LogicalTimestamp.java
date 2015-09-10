@@ -35,6 +35,8 @@ public final class LogicalTimestamp implements Comparable<LogicalTimestamp>, Ser
 
   private static final long serialVersionUID = -919934135310565056L;
 
+  private static final int LONG_BYTES = 8;
+
   private final long cyclicTime;
 
   /**
@@ -87,9 +89,9 @@ public final class LogicalTimestamp implements Comparable<LogicalTimestamp>, Ser
    * {@link LogicalTimestamp#fromBytes(byte[])} method.
    */
   public byte[] toBytes() {
-    byte[] bytes = new byte[8];
-    for (int i = 0; i < Long.BYTES; i++) {
-      bytes[i] = (byte) (cyclicTime >> (Long.BYTES - i - 1 << 3));
+    byte[] bytes = new byte[LONG_BYTES];
+    for (int i = 0; i < LONG_BYTES; i++) {
+      bytes[i] = (byte) (cyclicTime >> (LONG_BYTES - i - 1 << 3));
     }
     return bytes;
   }
