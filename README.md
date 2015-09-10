@@ -14,12 +14,14 @@ Simple implementation of Lamport and Vector clocks.
 
 // Initialize
 LogicalTimestamp ts0 = new LogicalTimestamp();
-LogicalTimestamp ts1 = ts.nextTimestamp();
+LogicalTimestamp ts1 = ts0.nextTimestamp();
 LogicalTimestamp ts100 = LogicalTimestamp.fromLong(100L);
 
 // Serialize and deserialize
-byte[] tsAsBytes = ts0.toBytes();
-LogicalTimestamp deserializedTs = tsAsBytes.fromBytes(tsAsBytes);
+byte[] ts0AsBytes = ts0.toBytes();
+LogicalTimestamp deserializedTs0 = LogicalTimestamp.fromBytes(ts0AsBytes);
+long ts1AsLong = ts1.asLong();
+LogicalTimestamp deserializedTs1 = LogicalTimestamp.fromLong(ts1AsLong);
 
 // Compare
 ts0.isBefore(ts1); // true
@@ -39,9 +41,9 @@ LogicalTimestamp initialTimestamp = new LogicalTimestamp();
 LogicalClock clock = new LogicalClock(initialTimestamp);
 
 // Time & tick
-LogicalTimestamp currentTimestamp = clock.time();
-LogicalTimestamp nextTimestamp = clock.tick(); // thread-safe
-LogicalTimestamp newCurrentTimestamp = clock.time(); // happens after currentTimestamp
+LogicalTimestamp currentTs = clock.time();
+LogicalTimestamp nextTs = clock.tick(); // thread-safe
+LogicalTimestamp newCurrentTs = clock.time(); // happens after currentTs
 
 ```
 
