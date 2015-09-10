@@ -1,152 +1,159 @@
 package com.antonkharenko.cloudclock;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import org.junit.Test;
-
-import java.io.*;
-
-import static org.junit.Assert.*;
 
 /**
  * @author Anton Kharenko
  */
 public class LogicalTimestampTest {
 
-	@Test
-	public void testNextTimestampAndComparisonInit() {
-		// Given
-		LogicalTimestamp ts = new LogicalTimestamp();
+  @Test
+  public void testNextTimestampAndComparisonInit() {
+    // Given
+    LogicalTimestamp ts = new LogicalTimestamp();
 
-		// When
-		LogicalTimestamp nextTs = ts.nextTimestamp();
+    // When
+    LogicalTimestamp nextTs = ts.nextTimestamp();
 
-		// Then
-		assertNotNull(nextTs);
-		assertTrue(ts.isBefore(nextTs));
-		assertTrue(nextTs.isAfter(ts));
-		assertTrue(ts.compareTo(nextTs) < 0);
-		assertTrue(nextTs.compareTo(ts) > 0);
-		assertFalse(ts.equals(nextTs));
-		assertFalse(ts.isAfter(nextTs));
-		assertFalse(nextTs.isBefore(nextTs));
-	}
+    // Then
+    assertNotNull(nextTs);
+    assertTrue(ts.isBefore(nextTs));
+    assertTrue(nextTs.isAfter(ts));
+    assertTrue(ts.compareTo(nextTs) < 0);
+    assertTrue(nextTs.compareTo(ts) > 0);
+    assertFalse(ts.equals(nextTs));
+    assertFalse(ts.isAfter(nextTs));
+    assertFalse(nextTs.isBefore(nextTs));
+  }
 
-	@Test
-	public void testNextTimestampAndComparison() {
-		// Given
-		LogicalTimestamp ts = LogicalTimestamp.fromLong(1000L);
+  @Test
+  public void testNextTimestampAndComparison() {
+    // Given
+    LogicalTimestamp ts = LogicalTimestamp.fromLong(1000L);
 
-		// When
-		LogicalTimestamp nextTs = ts.nextTimestamp();
+    // When
+    LogicalTimestamp nextTs = ts.nextTimestamp();
 
-		// Then
-		assertNotNull(nextTs);
-		assertTrue(ts.isBefore(nextTs));
-		assertTrue(nextTs.isAfter(ts));
-		assertTrue(ts.compareTo(nextTs) < 0);
-		assertTrue(nextTs.compareTo(ts) > 0);
-		assertFalse(ts.equals(nextTs));
-		assertFalse(ts.isAfter(nextTs));
-		assertFalse(nextTs.isBefore(nextTs));
-	}
+    // Then
+    assertNotNull(nextTs);
+    assertTrue(ts.isBefore(nextTs));
+    assertTrue(nextTs.isAfter(ts));
+    assertTrue(ts.compareTo(nextTs) < 0);
+    assertTrue(nextTs.compareTo(ts) > 0);
+    assertFalse(ts.equals(nextTs));
+    assertFalse(ts.isAfter(nextTs));
+    assertFalse(nextTs.isBefore(nextTs));
+  }
 
-	@Test
-	public void testNextTimestampAndComparisonMaxValue() {
-		// Given
-		LogicalTimestamp ts = LogicalTimestamp.fromLong(Long.MAX_VALUE);
+  @Test
+  public void testNextTimestampAndComparisonMaxValue() {
+    // Given
+    LogicalTimestamp ts = LogicalTimestamp.fromLong(Long.MAX_VALUE);
 
-		// When
-		LogicalTimestamp nextTs = ts.nextTimestamp();
+    // When
+    LogicalTimestamp nextTs = ts.nextTimestamp();
 
-		// Then
-		assertNotNull(nextTs);
-		assertTrue(ts.isBefore(nextTs));
-		assertTrue(nextTs.isAfter(ts));
-		assertTrue(ts.compareTo(nextTs) < 0);
-		assertTrue(nextTs.compareTo(ts) > 0);
-		assertFalse(ts.equals(nextTs));
-		assertFalse(ts.isAfter(nextTs));
-		assertFalse(nextTs.isBefore(nextTs));
-	}
+    // Then
+    assertNotNull(nextTs);
+    assertTrue(ts.isBefore(nextTs));
+    assertTrue(nextTs.isAfter(ts));
+    assertTrue(ts.compareTo(nextTs) < 0);
+    assertTrue(nextTs.compareTo(ts) > 0);
+    assertFalse(ts.equals(nextTs));
+    assertFalse(ts.isAfter(nextTs));
+    assertFalse(nextTs.isBefore(nextTs));
+  }
 
-	@Test
-	public void testNextTimestampAndComparisonMinValue() {
-		// Given
-		LogicalTimestamp ts = LogicalTimestamp.fromLong(Long.MIN_VALUE);
+  @Test
+  public void testNextTimestampAndComparisonMinValue() {
+    // Given
+    LogicalTimestamp ts = LogicalTimestamp.fromLong(Long.MIN_VALUE);
 
-		// When
-		LogicalTimestamp nextTs = ts.nextTimestamp();
+    // When
+    LogicalTimestamp nextTs = ts.nextTimestamp();
 
-		// Then
-		assertNotNull(nextTs);
-		assertTrue(ts.isBefore(nextTs));
-		assertTrue(nextTs.isAfter(ts));
-		assertTrue(ts.compareTo(nextTs) < 0);
-		assertTrue(nextTs.compareTo(ts) > 0);
-		assertFalse(ts.equals(nextTs));
-		assertFalse(ts.isAfter(nextTs));
-		assertFalse(nextTs.isBefore(nextTs));
-	}
+    // Then
+    assertNotNull(nextTs);
+    assertTrue(ts.isBefore(nextTs));
+    assertTrue(nextTs.isAfter(ts));
+    assertTrue(ts.compareTo(nextTs) < 0);
+    assertTrue(nextTs.compareTo(ts) > 0);
+    assertFalse(ts.equals(nextTs));
+    assertFalse(ts.isAfter(nextTs));
+    assertFalse(nextTs.isBefore(nextTs));
+  }
 
-	@Test
-	public void testNextTimestampAndComparisonFlipMaxValue() {
-		// Given
-		LogicalTimestamp ts = LogicalTimestamp.fromLong(-1);
+  @Test
+  public void testNextTimestampAndComparisonFlipMaxValue() {
+    // Given
+    LogicalTimestamp ts = LogicalTimestamp.fromLong(-1);
 
-		// When
-		LogicalTimestamp nextTs = ts.nextTimestamp();
+    // When
+    LogicalTimestamp nextTs = ts.nextTimestamp();
 
-		// Then
-		assertNotNull(nextTs);
-		assertTrue(ts.isBefore(nextTs));
-		assertTrue(nextTs.isAfter(ts));
-		assertTrue(ts.compareTo(nextTs) < 0);
-		assertTrue(nextTs.compareTo(ts) > 0);
-		assertFalse(ts.equals(nextTs));
-		assertFalse(ts.isAfter(nextTs));
-		assertFalse(nextTs.isBefore(nextTs));
-	}
+    // Then
+    assertNotNull(nextTs);
+    assertTrue(ts.isBefore(nextTs));
+    assertTrue(nextTs.isAfter(ts));
+    assertTrue(ts.compareTo(nextTs) < 0);
+    assertTrue(nextTs.compareTo(ts) > 0);
+    assertFalse(ts.equals(nextTs));
+    assertFalse(ts.isAfter(nextTs));
+    assertFalse(nextTs.isBefore(nextTs));
+  }
 
-	@Test
-	public void testBytesSerialization() {
-		// Given
-		LogicalTimestamp original = LogicalTimestamp.fromLong(-1001);
+  @Test
+  public void testBytesSerialization() {
+    // Given
+    LogicalTimestamp original = LogicalTimestamp.fromLong(-1001);
 
-		// When
-		byte[] tsBytes = original.toBytes();
-		LogicalTimestamp deserialized = LogicalTimestamp.fromBytes(tsBytes);
+    // When
+    byte[] tsBytes = original.toBytes();
+    LogicalTimestamp deserialized = LogicalTimestamp.fromBytes(tsBytes);
 
-		// Then
-		assertEquals(original, deserialized);
-	}
+    // Then
+    assertEquals(original, deserialized);
+  }
 
-	@Test
-	public void testLongSerialization() {
-		// Given
-		LogicalTimestamp original = LogicalTimestamp.fromLong(-1);
+  @Test
+  public void testLongSerialization() {
+    // Given
+    LogicalTimestamp original = LogicalTimestamp.fromLong(-1);
 
-		// When
-		long longValue = original.toLong();
-		LogicalTimestamp deserialized = LogicalTimestamp.fromLong(longValue);
+    // When
+    long longValue = original.toLong();
+    LogicalTimestamp deserialized = LogicalTimestamp.fromLong(longValue);
 
-		// Then
-		assertEquals(original, deserialized);
-	}
+    // Then
+    assertEquals(original, deserialized);
+  }
 
-	@Test
-	public void testJavaSerialization() throws Exception {
-		// Given
-		LogicalTimestamp original = LogicalTimestamp.fromLong(-1001);
+  @Test
+  public void testJavaSerialization() throws Exception {
+    // Given
+    LogicalTimestamp original = LogicalTimestamp.fromLong(-1001);
 
-		// When
-		ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
-		ObjectOutputStream out = new ObjectOutputStream(byteOutput);
-		out.writeObject(original);
+    // When
+    ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
+    ObjectOutputStream out = new ObjectOutputStream(byteOutput);
+    out.writeObject(original);
 
-		ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(byteOutput.toByteArray()));
-		LogicalTimestamp deserialized = (LogicalTimestamp) in.readObject();
+    ObjectInputStream in =
+        new ObjectInputStream(new ByteArrayInputStream(byteOutput.toByteArray()));
+    LogicalTimestamp deserialized = (LogicalTimestamp) in.readObject();
 
-		// Then
-		assertEquals(original, deserialized);
-	}
+    // Then
+    assertEquals(original, deserialized);
+  }
 
 }
