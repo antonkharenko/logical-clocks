@@ -12,7 +12,7 @@ import java.util.Arrays;
  */
 public final class VectorTimestamp {
 
-  private LogicalTimestamp[] timestamps;
+  private final LogicalTimestamp[] timestamps;
 
   /**
    * Creates vector clock of given length with default initial timestamps.
@@ -142,6 +142,6 @@ public final class VectorTimestamp {
 
   @Override
   public String toString() {
-    return "VectorTimestamp{" + "timestamps=" + Arrays.toString(timestamps) + '}';
+    return Arrays.toString(timestamps);
   }
 }
